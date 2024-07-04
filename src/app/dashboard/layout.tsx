@@ -3,17 +3,28 @@
  * @see https://v0.dev/t/S48tuE0OcqP
  * Documentation: https://v0.dev/docs#integrating-generated-code-into-your-nextjs-app
  */
+"use client"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuItem } from "@/components/ui/dropdown-menu"
-import React, {  useState } from "react"
+import React, {  useState, useEffect } from "react"
 import CourseSideBar from "./components/CourseSideBar"
+import { isAuthenticated } from "@/lib/utils/auth"
+import { useRouter } from "next/navigation"
+
 
 function DashboardLayout({
     children, // will be a page or nested layout
   }: {
     children: React.ReactNode
   }) {
+    const router = useRouter();
+
+  useEffect(() => {
+    if (!isAuthenticated()) {
+      router.push('/auth/login');
+    }
+  }, []);
   return (
     <div className="flex h-screen w-full">
 
@@ -61,6 +72,7 @@ function DashboardLayout({
         </header>
         <main className="flex-1 p-4 md:p-6">
         <div className="flex min-h-screen">
+
           <CourseSideBar/>
           {children}
     </div>

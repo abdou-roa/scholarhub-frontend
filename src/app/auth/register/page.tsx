@@ -37,13 +37,9 @@ export default function Component() {
 
     const handleSubmit = async (e: React.FormEvent): Promise<void>=>{
         e.preventDefault();
+        console.log("clicked")
         setError('')
         setSuccess('')
-
-        if (formData.password !== formData.password2) {
-            setError('Passwords do not match.');
-            return;
-        }
 
         try {
             const res = await fetch('http://127.0.0.1:8000/api/register/', {
@@ -56,9 +52,9 @@ export default function Component() {
 
             const data = await res.json();
 
-            if (data.success) {
+            if (data) {
                 setSuccess('Registration successful! Redirecting to login...');
-                setTimeout(() => router.push('/login'), 2000);
+                setTimeout(() => router.push('/auth/login'), 2000);
             } else {
                 setError(data.message || 'Registration failed. Please try again.');
             }
@@ -67,7 +63,6 @@ export default function Component() {
             setError('An error occurred. Please try again.');
         }
 
-        console.log("test")
     }
     return (
     <div className="mx-auto h-screen flex flex-col justify-center max-w-lg space-y-6 py-12">
@@ -97,10 +92,6 @@ export default function Component() {
         <div className="space-y-2">
           <Label htmlFor="password">Password</Label>
           <Input id="password" type="password" name="password" onChange={handleChange} required />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="password">Retype the Password</Label>
-          <Input id="password" type="password" name="password2" onChange={handleChange} required />
         </div>
         <Button type="submit" className="w-full">
           Register

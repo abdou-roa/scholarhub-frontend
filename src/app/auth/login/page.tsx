@@ -10,6 +10,8 @@ import { Input } from "@/components/ui/input"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Button } from "@/components/ui/button"
 import { useState } from "react"
+import { login } from '../../../lib/utils/auth';
+import { useRouter } from 'next/navigation';
 
 export default function Component() {
     const [formData, setFormData] = useState({
@@ -18,27 +20,16 @@ export default function Component() {
     })
     const [error, setError] = useState('')
     const [success, setSuccess] = useState('')
+    const router = useRouter();
 
     const handleSubmit = async (e: React.FormEvent): Promise<void>=>{
         e.preventDefault()
-        try{
-            const res = await fetch("http://127.0.0.1:8000/api/login/",{
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData),
-            })
-            const data = await res.json();
-            console.log(data.token)
-            if(res.status == 200){
-                localStorage.setItem('auth-token', data.token); // Save token to local storage
-                setSuccess('Login successful! Redirecting back...');
-            }
-            setError('login failed');
-        }catch (error) {
-            console.error('Error:', error);
-            setError('An error occurred. Please try again.');
+        console.log(formData.username)
+        try {
+          await login(formData.username, formData.password);
+          router.push('/dashboard');
+        } catch (err) {
+          setError(err.message);
         }
     }
 

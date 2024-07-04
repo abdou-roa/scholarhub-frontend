@@ -13,7 +13,7 @@ export default function CourseSideBar(){
     const handleItemClick = (item) => {
         setClickedItem(item);  // Update state with the clicked item
     };
-    const { data, error } = useSWR('http://127.0.0.1:8000/api/courses/1/weeks', fetcher);
+    const { data, error } = useSWR('/courses/1/weeks', fetcher);
     if (error) return <div>Error: {error.message}</div>;
     if (!data) return <div>Loading...</div>;
     return (

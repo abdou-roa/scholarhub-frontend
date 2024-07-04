@@ -1,14 +1,30 @@
 // utils/fetcher.js
-const Token = "Token 993d1875ae14b23eaab542f425a64cab35bea196"
-export const fetcher = (url:string) => fetch(url, {
-    method: 'GET',
-    headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `${Token}`, // Use your env variable here
-    },
-}).then(res => {
-    if (!res.ok) {
-        throw new Error('Network response was not ok');
+import axiosInstance from './axiosInstance';
+import Cookies from 'js-cookie';
+
+// Function to handle API requests
+export const fetcher = async (url, options = {}) => {
+  try {
+    // Default options for Axios
+    const defaultOptions = {
+      method: 'GET',
+      ...options,
+    };
+
+    // Making the request using the Axios instance
+    const response = await axiosInstance(url, defaultOptions);
+    return response.data;
+  } catch (error) {
+    // Handle errors, e.g., redirect to login if unauthorized
+    if (error.response) {
+      if (error.response.status === 401) {
+        Cookies.remove('token'); // Remove token if it's invalid or expired
+        window.location.href = '/auth/login'; // Redirect to login page
+      } else {
+        throw new Error(error.response.data.detail || 'API request failed');
+      }
+    } else {
+      throw new Error(error.message || 'API request failed');
     }
-    return res.json();
-});
+  }
+};

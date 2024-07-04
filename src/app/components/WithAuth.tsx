@@ -16,7 +16,7 @@ const withAuth = <P extends WithAuthProps>(WrappedComponent: React.ComponentType
         useEffect(() => {
             const token = localStorage.getItem('auth-token');
             if (!token) {
-                router.replace('/login');  // Redirect to login page if no token
+                router.replace('/auth/login');  // Redirect to login page if no token
             }
         }, [router]);
 
